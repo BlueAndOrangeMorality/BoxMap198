@@ -1,0 +1,86 @@
+==================================================
+Installation Java
+==================================================
+
+==================================================
+Installation Eclipse
+==================================================
+
+http://libgdx.badlogicgames.com/documentation/gettingstarted/Setting%20Up.html#setting-up-eclipse
+Aktuell offenbar Mars:   https://www.eclipse.org/mars/   Sollte Buildship schon enthalten (Siehe Help/Installation details), auch wenn laut der Buildship-Seite erst ab Neon davon die Rede ist.
+KEIN ADT mehr für Eclipse verfügbar
+
+==================================================
+Installation Gradle (4.3.1)
+==================================================
+
+ - Siehe Installationsanleitung: https://gradle.org/install/#manually
+ - Anpassung des Home-Directorys, da sonst alle Gradle-Bibliotheken im Benutzerverzeichnis, z.B. C:\Users\Kai landen, 
+   so in das GIT übertragen werden und bei einem anderen Rechner nicht mehr funktionieren.
+   ACHTUNG eigentlich sollte das alles nicht mit übertragen werden, such den Fehler lieber an dieser Stelle
+   http://mrhaki.blogspot.de/2010/09/gradle-goodness-changing-gradle-user.html
+   
+   -------------------------------------------------------------------------------------------------------------------------
+    Gradle Goodness (MrHaki): Changing the Gradle User Home Directory
+
+    We can change the Gradle user home directory in several ways. Gradle uses the directory .gradle in our home directory as the default Gradle user home directory. Here we can find for example the directory caches with downloaded dependencies. To change the Gradle user home directory we can set the environment variable GRADLE_USER_HOME and point it to another directory. The Gradle build script will look for this environment variable and then use the specified directory as the Gradle home directory.
+    $ export GRADLE_USER_HOME=/Users/mrhaki/dev/gradle
+    $ gradle -d -r
+    07:36:40.020 [main] INFO  org.gradle.launcher.Main - Starting Builder
+    07:36:40.120 [main] DEBUG org.gradle.launcher.Main - Gradle user home: /Users/mrhaki/dev/gradle
+    ...
+
+    But this is not the only way to change the Gradle user home directory. We can also pass the Java system property gradle.user.home to Gradle and specify a new directory. In the following sample we use the environment variable GRADLE_OPTS to pass the Java system property, but we could also use JAVA_OPTS.
+    $ export GRADLE_OPTS=-Dgradle.user.home=/Users/mrhaki/dev/gradle
+    $ gradle -d
+    07:36:40.020 [main] INFO  org.gradle.launcher.Main - Starting Builder
+    07:36:40.120 [main] DEBUG org.gradle.launcher.Main - Gradle user home: /Users/mrhaki/dev/gradle
+    ...
+
+    Or we can use the command-line options -g and --gradle-user-home when we run Gradle and use a different directory as a Gradle user home directory.
+    $ gradle -g /Users/mrhaki/dev/gradle -d
+    07:36:40.020 [main] INFO  org.gradle.launcher.Main - Starting Builder
+    07:36:40.120 [main] DEBUG org.gradle.launcher.Main - Gradle user home: /Users/mrhaki/dev/gradle
+    ...
+    $ gradle --gradle-user-home=/Users/mrhaki/dev/gradle -d
+    07:36:40.020 [main] INFO  org.gradle.launcher.Main - Starting Builder
+    07:36:40.120 [main] DEBUG org.gradle.launcher.Main - Gradle user home: /Users/mrhaki/dev/gradle
+    ...
+   -------------------------------------------------------------------------------------------------------------------------
+   
+==================================================
+Installation ADT / Android Studio
+==================================================
+
+
+==================================================
+Erstellen LibGDX-Grund-Projekt
+==================================================
+
+NEUE Variante, hat bisher funktioniert:
+
+ - GitHub-Repository erzeugen
+ - Dieses mit Eclipse in der Git-Ansicht lokal importieren (z.B. nach C:\git\BoxMap198)
+ - Das LibGDX-Projekt mit dem jar-Tool in dieses Verzeichnis erstellen.
+ - Per Gradle-Import nach Eclipse importieren (Dadurch wird der Aufenthaltsort ja nicht verändert)
+ - Es ist nun im Repository, man kann es einfach mit Eclipse committen, so verschwinden auch die Dateien nicht
+  - Und es wird gleich die richtige erzeugte .gitignore - Datei von LibGDX verwendet
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
