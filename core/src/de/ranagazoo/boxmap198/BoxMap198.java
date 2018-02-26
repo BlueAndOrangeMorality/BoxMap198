@@ -14,7 +14,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -25,6 +24,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -36,20 +36,22 @@ import com.badlogic.gdx.utils.Array;
 
 public class BoxMap198 extends ApplicationAdapter {
 
-	public static final String TEXTURE_LIBGDX = "data/libgdx.png";
-	public static final String TEXTURE_ENTITIES = "data/entities-big.png";
-	public static final String TEXTURE_MECHA = "data/mecha32.png";
-	public static final String MAP_MAP = "data/map.tmx";
+//	public static final String TEXTURE_LIBGDX = "data/libgdx.png";
+//	public static final String TEXTURE_ENTITIES = "data/entities-big.png";
+//	public static final String TEXTURE_MECHA = "data/mecha32.png";
+//	public static final String MAP_MAP = "data/map.tmx";
 
-	private OrthographicCamera cameraSprites;
-	private OrthographicCamera cameraBox2dDebug;
 
+	private CameraManager cameraManager;
+	
 	private AssetManager assetManager;
 	private SpriteBatch batch;
 
-	private Sprite playerSprite;
-	private Sprite debugSprite;
-	private Animation<TextureRegion> animation;
+	private RenderingManager renderingManager;
+	
+//	private Sprite playerSprite;
+//	private Sprite debugSprite;
+//	private Animation<TextureRegion> animation;
 
 	private float stateTime;
 
@@ -67,51 +69,48 @@ public class BoxMap198 extends ApplicationAdapter {
 	@Override
 	public void create () {
 
+		cameraManager = new CameraManager();
+		
 		assetManager = new AssetManager();
 		loadAssets();
 
 		worldManager = new WorldManager();
 
-		cameraSprites = new OrthographicCamera();
-		cameraSprites.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cameraSprites.update();
-
-		cameraBox2dDebug = new OrthographicCamera();
-		cameraBox2dDebug.setToOrtho(false, Gdx.graphics.getWidth() / TS, Gdx.graphics.getHeight() / TS);
-		cameraBox2dDebug.update();
-
+		//TODO: Ggf. nach RenderingManager auslagern, dann da disposen!
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 
-		Texture entitiesBigTexture = assetManager.get(TEXTURE_ENTITIES);
-		entitiesBigTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		renderingManager = new RenderingManager(assetManager, batch);
+		
+//		Texture entitiesBigTexture = assetManager.get(TEXTURE_ENTITIES);
+//		entitiesBigTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+//
+//		playerSprite = new Sprite(new TextureRegion(entitiesBigTexture, 8 * TS, 1 * TS, TS, TS));
+//		playerSprite.setSize(TS, TS);
+//		playerSprite.setOrigin(TS / 2, TS / 2);
+//
+//		debugSprite = new Sprite(new TextureRegion(entitiesBigTexture, 2 * TS, 0 * TS, TS, TS));
+//		debugSprite.setSize(TS, TS);
+//		debugSprite.setOrigin(TS / 2, TS / 2);
 
-		playerSprite = new Sprite(new TextureRegion(entitiesBigTexture, 8 * TS, 1 * TS, TS, TS));
-		playerSprite.setSize(TS, TS);
-		playerSprite.setOrigin(TS / 2, TS / 2);
-
-		debugSprite = new Sprite(new TextureRegion(entitiesBigTexture, 2 * TS, 0 * TS, TS, TS));
-		debugSprite.setSize(TS, TS);
-		debugSprite.setOrigin(TS / 2, TS / 2);
-
-		Texture mechaTexture = assetManager.get(TEXTURE_MECHA);
-		mechaTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
-		TextureRegion[] animationFrames = new TextureRegion[5];
-		animationFrames[0] = new TextureRegion(mechaTexture, 0, 384, 64, 64);
-		animationFrames[1] = new TextureRegion(mechaTexture, 64, 384, 64, 64);
-		animationFrames[2] = new TextureRegion(mechaTexture, 128, 384, 64, 64);
-		animationFrames[3] = new TextureRegion(mechaTexture, 192, 384, 64, 64);
-		animationFrames[4] = new TextureRegion(mechaTexture, 256, 384, 64, 64);
-		animation = new Animation<TextureRegion>(0.1f, animationFrames);
+//		Texture mechaTexture = assetManager.get(TEXTURE_MECHA);
+//		mechaTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+//
+//		TextureRegion[] animationFrames = new TextureRegion[5];
+//		animationFrames[0] = new TextureRegion(mechaTexture, 0, 384, 64, 64);
+//		animationFrames[1] = new TextureRegion(mechaTexture, 64, 384, 64, 64);
+//		animationFrames[2] = new TextureRegion(mechaTexture, 128, 384, 64, 64);
+//		animationFrames[3] = new TextureRegion(mechaTexture, 192, 384, 64, 64);
+//		animationFrames[4] = new TextureRegion(mechaTexture, 256, 384, 64, 64);
+//		animation = new Animation<TextureRegion>(0.1f, animationFrames);
 
 		debugOutput = new DebugOutput();
 
 		stateTime = 0f;
 
-		map = assetManager.get(MAP_MAP);
+		map = assetManager.get(Config.MAP_MAP);
 		mapRenderer = new OrthogonalTiledMapRenderer(map, 1f / 1f);
-		mapRenderer.setView(cameraSprites);
+		mapRenderer.setView(cameraManager.getCameraSprites());
 
 		// Erzeuge Entities aus der Map
 		boxEntities = new Array<BoxEntity>();
@@ -145,12 +144,24 @@ public class BoxMap198 extends ApplicationAdapter {
 			boxEntity.move();
 		}
 
+		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(0);
+		
+		Vector2 mapSize = new Vector2(layer.getWidth(), layer.getHeight());
+		Vector2 playerPosition = new Vector2(0,0);
+		
+		
+		
 		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		//TODO: Maprenderer auslagern?
+		mapRenderer.setView(cameraManager.getCameraSprites());
 		mapRenderer.render();
 
-		batch.setProjectionMatrix(cameraSprites.combined);
+		//TODO: stateTime auslagern?
+		stateTime += Gdx.graphics.getDeltaTime();
+		
+		batch.setProjectionMatrix(cameraManager.getCameraSprites().combined);
 		batch.begin();
 
 		// Aktuell werden nur Player und Enemies gerendert
@@ -164,16 +175,18 @@ public class BoxMap198 extends ApplicationAdapter {
 			String type = boxEntity.getType();
 
 			if (type.equals(Config.TYPE_PLAYER1)) {
-				playerSprite.setPosition((position.x - 0.5f) * TS, (position.y - 0.5f) * TS);
-				playerSprite.setRotation(MathUtils.radiansToDegrees * angle);
-				playerSprite.draw(batch);
+//				playerSprite.setPosition((position.x - 0.5f) * TS, (position.y - 0.5f) * TS);
+//				playerSprite.setRotation(MathUtils.radiansToDegrees * angle);
+//				playerSprite.draw(batch);
+				renderingManager.renderPlayerSprite(position, angle);
+				playerPosition = position;
 			} else if (type.equals(Config.TYPE_ENEMY1)) {
-				stateTime += Gdx.graphics.getDeltaTime();
-				TextureRegion currentFrame = (TextureRegion)animation.getKeyFrame(stateTime, true);
-				Sprite s = new Sprite(currentFrame);
-				s.setPosition((position.x - 1) * TS, (position.y - 1) * TS);
-				s.setRotation(MathUtils.radiansToDegrees * angle + 180);
-				s.draw(batch);
+				renderingManager.renderEnemy(position, angle, stateTime);
+//				TextureRegion currentFrame = (TextureRegion)animation.getKeyFrame(stateTime, true);
+//				Sprite s = new Sprite(currentFrame);
+//				s.setPosition((position.x - 1) * TS, (position.y - 1) * TS);
+//				s.setRotation(MathUtils.radiansToDegrees * angle + 180);
+//				s.draw(batch);
 			}
 		}
 
@@ -183,9 +196,7 @@ public class BoxMap198 extends ApplicationAdapter {
 			Vector2 position = body.getPosition();
 			float angle = body.getAngle();
 
-			debugSprite.setPosition((position.x - 0.5f) * TS, (position.y - 0.5f) * TS);
-			debugSprite.setRotation(MathUtils.radiansToDegrees * angle);
-			debugSprite.draw(batch);
+			renderingManager.renderDebugSprite(position, angle);
 		}
 
 		// Render debug messages
@@ -193,14 +204,17 @@ public class BoxMap198 extends ApplicationAdapter {
 
 		batch.end();
 
-		shapeRenderer.setProjectionMatrix(cameraSprites.combined);
+		shapeRenderer.setProjectionMatrix(cameraManager.getCameraSprites().combined);
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.polygon(worldManager.getWaypointGroup().getWaypointsRender());
 		shapeRenderer.end();
 
 		worldManager.step();
-		worldManager.render(cameraBox2dDebug.combined);
+		worldManager.render(cameraManager.getCameraBox2dDebug().combined);
 
+		
+		cameraManager.update(playerPosition, mapSize);
+		
 		// debugRenderer.render(world, cameraBox2dDebug.combined);
 	}
 
@@ -226,19 +240,19 @@ public class BoxMap198 extends ApplicationAdapter {
 // }
 
 	public void loadAssets () {
-		assetManager.load(TEXTURE_LIBGDX, Texture.class);
-		assetManager.load(TEXTURE_ENTITIES, Texture.class);
-		assetManager.load(TEXTURE_MECHA, Texture.class);
+		assetManager.load(Config.TEXTURE_LIBGDX, Texture.class);
+		assetManager.load(Config.TEXTURE_ENTITIES, Texture.class);
+		assetManager.load(Config.TEXTURE_MECHA, Texture.class);
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-		assetManager.load(MAP_MAP, TiledMap.class);
+		assetManager.load(Config.MAP_MAP, TiledMap.class);
 		assetManager.finishLoading();
 	}
 
-	public AssetManager getAssetManager () {
-		return assetManager;
-	}
+//	public AssetManager getAssetManager () {
+//		return assetManager;
+//	}
 
-	public Animation<TextureRegion> getAnimation () {
-		return animation;
-	}
+//	public Animation<TextureRegion> getAnimation () {
+//		return animation;
+//	}
 }

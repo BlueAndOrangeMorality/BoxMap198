@@ -3,6 +3,11 @@ package de.ranagazoo.boxmap198;
 
 public class Config {
 
+	public static final String TEXTURE_LIBGDX = "data/libgdx.png";
+	public static final String TEXTURE_ENTITIES = "data/entities-big.png";
+	public static final String TEXTURE_MECHA = "data/mecha32.png";
+	public static final String MAP_MAP = "data/map.tmx";
+	
 	public static final short CATEGORY_PLAYER = 0x0001; // 0000000000000001 in binary
 	public static final short CATEGORY_MONSTER = 0x0002; // 0000000000000010 in binary
 	public static final short CATEGORY_MSENSOR = 0x0008; // 0000000000001000 in binary
