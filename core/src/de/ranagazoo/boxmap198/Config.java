@@ -31,6 +31,7 @@ public class Config {
 	public static final String TYPE_OBSTACLE = "obstacle";
 	public static final String TYPE_WAYPOINT = "waypoint";
 	public static final String TYPE_WAYPOINTGROUP = "waypointGroup";
+	public static final String TYPE_BORDER = "border";
 
 	public static final int STATUS_IDLE = 1;
 	public static final int STATUS_ATTACK = 2;

@@ -68,8 +68,14 @@ NEUE Variante, hat bisher funktioniert:
 
 
 
+==================================================
+XML-Fehlermeldung:
+==================================================
 
+https://stackoverflow.com/questions/322155/bogus-eclipse-warning-for-web-xml-no-grammar-constraints-dtd-or-xml-schema-d
 
+I hate that warning too. Specially because it appears in XML files that you haven't written but appear in your project for whatever reason (if you use MAVEN it's hell).
+With Eclipse 3.5+ you can easily remove this validation rule. Go to Preferences-->XML-->XML FILES --> Validation and Select "ignore".
 
 
 

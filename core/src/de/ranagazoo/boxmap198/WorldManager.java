@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -105,11 +106,32 @@ public class WorldManager implements Disposable {
 			}
 		}
 
+		// Map Border
+		BodyDef bodyDef = boxEntityFactory.getBodyDefFromMapObject(Config.TYPE_BORDER);
+		bodyDef.position.set(0, 0);
+		Body body = world.createBody(bodyDef);
+
+		FixtureDef fixtureDef = boxEntityFactory.getFixtureDefFromMapObject(Config.TYPE_BORDER);
+
+		// Shape ist aktuell vorgegeben, sollte aber aus der Map gelesen werden NICHT AUS DEM MAPOBJECT
+		// fixtureDef.shape = boxEntityFactory.getShapeFromMapObject(mapObject);
+
+		float width = tiledMap.getProperties().get("width", Integer.class).floatValue();
+		float height = tiledMap.getProperties().get("height", Integer.class).floatValue();
+
+		ChainShape borderChainShape = new ChainShape();
+		// borderChainShape.createChain(new Vector2[]{new Vector2(0f, 0f), new Vector2(width, 0), new Vector2(width, height), new
+		// Vector2(0f, height), new Vector2(0, 0)});
+		borderChainShape.createChain(new float[] {0f, 0f, width, 0f, width, height, 0f, height, 0f, 0f});
+		fixtureDef.shape = borderChainShape;
+
+		body.createFixture(fixtureDef);
+
 		return boxEntities;
 	}
 
-	/** Performs a predifined Box2D - World step */
-	public void step () {
+	/** Performs a predifined Box2D - World step. This performs collision detection, integration, and constraint solution. */
+	public void update () {
 		world.step(1 / 60f, 6, 2);
 	}
 

@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -29,15 +30,23 @@ public class BoxEntityFactory implements Disposable {
 	public static final int BOXTYPE_OBSTACLE = 3;
 	public static final int BOXTYPE_WAYPOINT = 4;
 
-	private BodyDef playerBodyDef, enemyBodyDef, obstacleBodyDef, waypointBodyDef;
-	private FixtureDef playerFixtureDef, enemyFixtureDef, enemyFixtureDefSensor, obstacleFixtureDef, waypointFixtureDef;
+	private BodyDef playerBodyDef, enemyBodyDef, obstacleBodyDef, waypointBodyDef, borderBodyDef;
+	private FixtureDef playerFixtureDef, enemyFixtureDef, enemyFixtureDefSensor, obstacleFixtureDef, waypointFixtureDef, borderFixtureDef;
 
 	private PolygonShape playerPolygonShape, enemyPolygonShape, obstaclePolygonShape;
 	private CircleShape waypointCircleShape, enemyCircleShape;
-
+   private ChainShape borderChainShape;
+	
+	
 // 1. Camera anpassen
 // 2. Obstacle und Waypoint brauch kein render und kein move....
 // 3. Waypoint-Polygons statt waypoints
+	
+	
+
+	
+	
+	
 
 	public BoxEntityFactory () {
 		// Player
@@ -127,6 +136,42 @@ public class BoxEntityFactory implements Disposable {
 		waypointCircleShape = new CircleShape();
 		waypointCircleShape.setRadius(0.5f);
 		waypointFixtureDef.shape = waypointCircleShape;
+		
+		
+		
+		
+   	// Border
+		borderBodyDef = new BodyDef();
+		borderBodyDef.angularDamping = 2f;
+		borderBodyDef.fixedRotation = false;
+		borderBodyDef.linearDamping = 2f;
+		borderBodyDef.type = BodyType.StaticBody;
+
+		borderFixtureDef = new FixtureDef();
+		borderFixtureDef.density = 0.5f;
+		borderFixtureDef.friction = 0.4f;
+		borderFixtureDef.restitution = 0.1f;
+		borderFixtureDef.filter.categoryBits = Config.CATEGORY_SCENERY;
+		borderFixtureDef.filter.maskBits = Config.MASK_SCENERY;
+		borderFixtureDef.isSensor = false; // UMÄNDERN!!!!
+		
+		borderChainShape = new ChainShape();
+		borderChainShape.createChain(new Vector2[]{new Vector2(-15f, -1f), new Vector2(15f, -1f), new Vector2(15f, 21f), new Vector2(-15f, 21f), new	Vector2(-15f, -1f)});
+		borderFixtureDef.shape = borderChainShape;
+		
+		// TODO Box2dChainShape funktioniert nicht mit 1.9.7
+
+	// Border, könnte man auch noch auslagern
+	//Shape tempShape;
+	//FixtureDef tempFixtureDef = null;
+	//borderBody = createBody(world, createStaticBodyDef(2, false, 2, new Vector2(16, 2)), "userData");
+	//tempShape = createChainShape(new Vector2[]{new Vector2(-15f, -1f), new Vector2(15f, -1f), new Vector2(15f, 21f), new Vector2(-15f, 21f), new Vector2(-15f, -1f)});
+
+	// tempFixtureDef = createFixtureDef(0.0f, 0.4f, 0.1f, tempShape, CATEGORY_SCENERY, MASK_SCENERY);
+	// borderBody.createFixture(tempFixtureDef);
+	// tempShape.dispose();
+		
+		
 	}
 
 	public String getTypeFromMapObject (MapObject mapObject) {
